@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Claims Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="./Claim.css"> -->
+     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        .nav-bar {
+            background: #2c3e50;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            flex-wrap: wrap;
+        }
+
+        .nav-bar h2 {
+            font-size: 1.5rem;
+        }
+
+        .nav-bar button {
+            padding: 8px 16px;
+            background: #dc3545;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .nav-bar button:hover {
+            background: #c82333;
+        }
+
+        .dashboard {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #3498db;
+        }
+
+        .tab-container {
+            margin-bottom: 2rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .claim-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .claim-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .approve-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .reject-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .clear-btn {
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .clear-btn:hover {
+            background: #c82333;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 768px) {
+            .nav-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tab-btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .clear-btn {
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+            .claim-card {
+                margin: 1rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .stat-card i {
+                font-size: 1.5rem;
+            }
+
+            .tab-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+        }
+
+     </style>
+</head>
+<body>
+<nav class="nav-bar">
+    <h2><i class="fas fa-users-cog"></i> HR Portal</h2>
+    <button class="clear-btn" onclick="clearRecords()">Clear Records</button> <!-- Clear Records Button -->
+</nav>
+
+<div class="dashboard">
+    <div class="header">
+        <h1><i class="fas fa-tasks"></i> Claims Management Dashboard</h1>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <h3>Total Claims</h3>
+            <p id="hrTotalClaims">0</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-check-circle"></i>
+            <h3>Approved</h3>
+            <p id="hrApprovedClaims">0</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-times-circle"></i>
+            <h3>Rejected</h3>
+            <p id="hrRejectedClaims">0</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-clock"></i>
+            <h3>Pending</h3>
+            <p id="hrPendingClaims">0</p>
+        </div>
+    </div>
+
+    <div class="tab-container">
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="filterClaims('all')">All Claims</button>
+            <button class="tab-btn" onclick="filterClaims('pending')">Pending</button>
+            <button class="tab-btn" onclick="filterClaims('approved')">Approved</button>
+            <button class="tab-btn" onclick="filterClaims('rejected')">Rejected</button>
+        </div>
+    </div>
+
+    <div class="claims-list" id="hrClaimsList">
+        <!-- Claims will be populated here -->
+    </div>
+</div>
+
+<div class="notification" id="notification"></div>
+<script>
+    
+let claims = JSON.parse(localStorage.getItem('claims')) || [];
+let currentFilter = 'all';
+
+function updateClaimStatus(claimId, status) {
+    const claimIndex = claims.findIndex(claim => claim.id === claimId);
+    if (claimIndex !== -1) {
+        claims[claimIndex].status = status;
+        localStorage.setItem('claims', JSON.stringify(claims));
+        loadDashboard();
+        showNotification(`Claim ${status} successfully!`, 'success');
+    }
+}
+
+function filterClaims(status) {
+    currentFilter = status;
+    
+    // Update active tab button
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    loadDashboard();
+}
+
+function filterClaimsByStatus(claimsArray) {
+    if (currentFilter === 'all') return claimsArray;
+    return claimsArray.filter(claim => claim.status === currentFilter);
+}
+
+function updateStats() {
+    document.getElementById('hrTotalClaims').textContent = claims.length;
+    document.getElementById('hrApprovedClaims').textContent = 
+        claims.filter(claim => claim.status === 'approved').length;
+    document.getElementById('hrRejectedClaims').textContent = 
+        claims.filter(claim => claim.status === 'rejected').length;
+    document.getElementById('hrPendingClaims').textContent = 
+        claims.filter(claim => claim.status === 'pending').length;
+}
+
+function loadDashboard() {
+    updateStats();
+    const hrClaimsList = document.getElementById('hrClaimsList');
+    hrClaimsList.innerHTML = '';
+
+    const filteredClaims = filterClaimsByStatus(claims);
+
+    filteredClaims.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt))
+        .forEach(claim => {
+            const claimCard = document.createElement('div');
+            claimCard.className = 'claim-card';
+            claimCard.innerHTML = `
+                <h3><i class="fas fa-file-alt"></i> ${claim.type.charAt(0).toUpperCase() + claim.type.slice(1)} Claim</h3>
+                <p><strong>Employee ID:</strong> ${claim.employeeId}</p>
+                <p><strong>Submitted:</strong> ${new Date(claim.submittedAt).toLocaleString()}</p>
+                <p><strong>Date:</strong> ${new Date(claim.date).toLocaleDateString()}</p>
+                <p><strong>Amount:</strong> $${claim.amount}</p>
+                <p><strong>Description:</strong> ${claim.description}</p>
+                <p><strong>Status:</strong> <span class="status-badge status-${claim.status}">${claim.status.toUpperCase()}</span></p>
+                ${claim.status === 'pending' ? `
+                    <div class="action-buttons">
+                        <button class="action-btn approve-btn" onclick="updateClaimStatus(${claim.id}, 'approved')">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        <button class="action-btn reject-btn" onclick="updateClaimStatus(${claim.id}, 'rejected')">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                    </div>
+                ` : ''}
+            `;
+            hrClaimsList.appendChild(claimCard);
+        });
+}
+
+function showNotification(message, type = 'success') {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.style.background = type === 'success' ? '#4CAF50' : '#f44336';
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+
+// Function to clear all claims records
+function clearRecords() {
+    const confirmation = confirm('Are you sure you want to clear all records? This action cannot be undone.');
+    if (confirmation) {
+        localStorage.removeItem('claims'); // Clear claims from localStorage
+        claims = []; // Reset claims array
+        loadDashboard(); // Reload dashboard to reflect the changes
+        showNotification('All claims records have been cleared.', 'success');
+    }
+}
+
+// Initialize dashboard on load
+document.addEventListener('DOMContentLoaded', loadDashboard);
+
+</script>
+</body>
+</html>
